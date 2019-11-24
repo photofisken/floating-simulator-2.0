@@ -16,12 +16,14 @@ public class PhysicsBody : MonoBehaviour
     [SerializeField] private MeshFilter mf;
     [HideInInspector] public bool dragging = false;
     [SerializeField] private GameObject water;
+    [SerializeField] private GameObject ground;
     [SerializeField] private Vector3 intersectPosition;
 
     private void Start()
     {
         mf = GetComponent<MeshFilter>();
         water = GameObject.Find("Water");
+        ground = GameObject.Find("Ground");
         intersectPosition = water.transform.position;
         totalVolume = VolumeCalculator.GetTotalVolume(mf.mesh);
     }

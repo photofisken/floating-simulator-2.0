@@ -7,7 +7,7 @@ public class Lift
 
     public static Vector3 CalculateLift(Mesh mesh, Transform meshTransform, Vector3 intersectPosition, float totalVolume)
     {
-        float densityAir = 1.2f; // around 15 degrees outside kg/m3
+        float densityAir = 1.2f; // around 15 degrees celcius outside, kg/m3
         float densityWater = 997f; // kg/m3
     
         float volumeUnderWater = VolumeCalculator.GetVolume(mesh, meshTransform, intersectPosition);
