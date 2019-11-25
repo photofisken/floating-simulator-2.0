@@ -66,18 +66,9 @@ public class Intersection
 {
     // All the converted triangles and vertices in the mesh
 
-
-    private void Start()
+    public static List<MyTriangle> GetTriangleList(ref List<MyTriangle> myTriangles, ref List<MyVertex> myVertices, Transform meshTransform, Vector3 intersectPosition)
     {
-    }
-
-    public static List<MyTriangle> GetTriangleList(Mesh mesh, Transform meshTransform, Vector3 intersectPosition)
-    {
-        List<MyVertex> myVertices;
-        List<MyTriangle> myTriangles;
-
         // Convert the mesh vertexes into myVertexes with connections and stuff
-        ConvertToTriangles(mesh, out myVertices, out myTriangles);
 
         Matrix4x4 worldToLocal = meshTransform.worldToLocalMatrix;
         intersectPosition = worldToLocal.MultiplyPoint3x4(intersectPosition);   // Make intersect local

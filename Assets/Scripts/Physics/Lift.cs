@@ -5,12 +5,12 @@ using UnityEngine;
 public class Lift
 {
 
-    public static Vector3 CalculateLift(Mesh mesh, Transform meshTransform, Vector3 intersectPosition, float totalVolume)
+    public static Vector3 CalculateLift(ref List<MyTriangle> myTriangles, ref List<MyVertex> myVertices, Transform meshTransform, Vector3 intersectPosition, float totalVolume)
     {
         float densityAir = 1.2f; // around 15 degrees celcius outside, kg/m3
         float densityWater = 997f; // kg/m3
     
-        float volumeUnderWater = VolumeCalculator.GetVolume(mesh, meshTransform, intersectPosition);
+        float volumeUnderWater = VolumeCalculator.GetVolume(ref myTriangles, ref myVertices, meshTransform, intersectPosition);
 
         // F = Volume * density * gForce (formula F = mg)
         float waterForce = volumeUnderWater * densityWater * -Gravity.Force;

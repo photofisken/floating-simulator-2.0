@@ -19,6 +19,9 @@ public class PhysicsBody : MonoBehaviour
     [SerializeField] private GameObject ground;
     [SerializeField] private Vector3 intersectPosition;
 
+    List<MyVertex> myVertices;
+    List<MyTriangle> myTriangles;
+
     private void Start()
     {
         mf = GetComponent<MeshFilter>();
@@ -26,13 +29,21 @@ public class PhysicsBody : MonoBehaviour
         ground = GameObject.Find("Ground");
         intersectPosition = water.transform.position;
         totalVolume = VolumeCalculator.GetTotalVolume(mf.mesh);
+
+        Intersection.ConvertToTriangles(mf.mesh, out myVertices, out myTriangles);
     }
     private void FixedUpdate()
     {
         if (!dragging)
         {
             velocity += Gravity.Acceleration() * Time.fixedDeltaTime;
-            velocity += Lift.CalculateLift(mf.mesh, transform, intersectPosition, totalVolume) / mass * Time.fixedDeltaTime;
+
+            // Get Triangle List
+            // Get Volume
+            // Calculate Lift
+            // velocity += lift;
+
+            //velocity += Lift.CalculateLift(ref myTriangles, ref myVertices, transform, intersectPosition, totalVolume) / mass * Time.fixedDeltaTime;
             ApplyVelocity(velocity);
         }
     }

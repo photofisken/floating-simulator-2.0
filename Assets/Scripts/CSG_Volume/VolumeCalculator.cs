@@ -21,10 +21,10 @@ public class VolumeCalculator
         return totalVolume;
     }
 
-    public static float GetVolume(Mesh mesh, Transform meshTransform, Vector3 intersectPosition)
+    public static float GetVolume(ref List<MyTriangle> myTriangles, ref List<MyVertex> myVertices, Transform meshTransform, Vector3 intersectPosition)
     {
 
-        List<MyTriangle> underWaterTriangles = Intersection.GetTriangleList(mesh, meshTransform, intersectPosition);
+        List<MyTriangle> underWaterTriangles = Intersection.GetTriangleList(ref myTriangles, ref myVertices, meshTransform, intersectPosition);
 
         float underWaterVolume = 0f;
 
