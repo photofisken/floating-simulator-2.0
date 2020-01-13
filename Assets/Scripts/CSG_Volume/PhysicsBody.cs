@@ -19,8 +19,9 @@ public class PhysicsBody : MonoBehaviour
     [SerializeField] private GameObject ground;
     [SerializeField] private Vector3 intersectPosition;
 
-    List<MyVertex> myVertices;
-    List<MyTriangle> myTriangles;
+    public List<Vertex> vertices;
+    public List<Triangle> triangles;
+    public List<Triangle> underWaterTriangles;
 
     private void Start()
     {
@@ -30,7 +31,7 @@ public class PhysicsBody : MonoBehaviour
         intersectPosition = water.transform.position;
         totalVolume = VolumeCalculator.GetTotalVolume(mf.mesh);
 
-        Intersection.ConvertToTriangles(mf.mesh, out myVertices, out myTriangles);
+        Intersection.ConvertToTriangles(mf.mesh, out vertices, out triangles);
     }
     private void FixedUpdate()
     {
@@ -38,10 +39,25 @@ public class PhysicsBody : MonoBehaviour
         {
             velocity += Gravity.Acceleration() * Time.fixedDeltaTime;
 
+            float time = Time.realtimeSinceStartup;
+
             // Get Triangle List
+            List<Triangle> triangleList = Intersection.GetTriangleList(ref triangles, ref vertices, transform, intersectPosition);
+            //Debug.Log("GetTriangleList(): " + (Time.realtimeSinceStartup - time) * 1000f + "ms");
+            //time = Time.realtimeSinceStartup;
+
             // Get Volume
+            float volumeUnderWater = VolumeCalculator.GetVolume(ref triangleList, transform, intersectPosition);
+           // Debug.Log("GetVolume(): " + (Time.realtimeSinceStartup - time) * 1000f + "ms");
+            //time = Time.realtimeSinceStartup;
+
             // Calculate Lift
+            Vector3 lift = Lift.CalculateLift(transform, intersectPosition, volumeUnderWater, totalVolume);
+            //Debug.Log("CalculateLift(): " + (Time.realtimeSinceStartup - time) * 1000f + "ms");
+            //time = Time.realtimeSinceStartup;
+
             // velocity += lift;
+            velocity += lift / mass * Time.fixedDeltaTime;
 
             //velocity += Lift.CalculateLift(ref myTriangles, ref myVertices, transform, intersectPosition, totalVolume) / mass * Time.fixedDeltaTime;
             ApplyVelocity(velocity);
