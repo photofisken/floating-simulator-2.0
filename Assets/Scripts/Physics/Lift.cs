@@ -12,6 +12,7 @@ public class Lift
     
         // F = Volume * density * gForce (formula F = mg)
         float waterForce = volumeUnderWater * densityWater * -Gravity.Force;
+
         float volumeOverWater = totalVolume - volumeUnderWater;
         float airForce = volumeOverWater * densityAir * -Gravity.Force;
 

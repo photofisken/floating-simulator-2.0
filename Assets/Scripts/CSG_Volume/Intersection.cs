@@ -6,11 +6,9 @@ public class Intersection
 {
     // All the converted triangles and vertices in the mesh
 
-    public static List<Triangle> GetTriangleList(ref List<Triangle> triangles, ref List<Vertex> myVertices, Transform meshTransform, Vector3 intersectPosition)
+    public static List<Triangle> GetTrianglesUnderWater(ref List<Triangle> triangles, ref List<Vertex> myVertices, Transform meshTransform, Vector3 intersectPosition)
     {
         List<Triangle> underWaterTriangles = new List<Triangle>();
-
-        // Convert the mesh vertexes into myVertexes with connections and stuff
 
         Matrix4x4 worldToLocal = meshTransform.worldToLocalMatrix;
         intersectPosition = worldToLocal.MultiplyPoint3x4(intersectPosition);   // Make intersect local
@@ -29,37 +27,31 @@ public class Intersection
                 if (triangles[i].vertices[j].position.y > intersectPosition.y)
                 {
                     verticesOver[overIndex] = triangles[i].vertices[j];
+                    overIndex++;
                 }
                 else
                 {
                     verticesUnder[underIndex] = triangles[i].vertices[j];
+                    underIndex++;
                 }
             }
 
-            if (overIndex > 0 && underIndex < 3)
+            if (overIndex > 0 && overIndex < 3)   // If not all vertices in a triangle are over or under water!
             {
                 Triangle[] newTriangles = new Triangle[3];
 
-                if (overIndex >= 2)
-                {
+                if (overIndex == 2)
                     newTriangles = SplitTriangle(triangles[i], verticesUnder[0], verticesOver, intersectPosition.y);
-                }
                 else
-                {
                     newTriangles = SplitTriangle(triangles[i], verticesOver[0], verticesUnder, intersectPosition.y);
-                }
 
                 foreach (Triangle triangle in newTriangles)
-                {
                     if (triangle.position.y < intersectPosition.y)
-                        underWaterTriangles.Add(triangle);
-                }
-                // Add these to the list, avoid duplicates, then do more stuff
+                        underWaterTriangles.Add(triangle);              // Adds the new triangles that are below water level in a separate list
+
             }
             if (underIndex >= 3)
-            {
-                underWaterTriangles.Add(triangles[i]);
-            }
+                underWaterTriangles.Add(triangles[i]);      // Add the rest of the triangles that have all vertices under the water level in a separate list 
 
             overIndex = 0;
             underIndex = 0;
@@ -106,7 +98,7 @@ public class Intersection
         Vector3[] vertices = mesh.vertices;
         int[] triangles = mesh.triangles;
 
-        // Add the triangle vertices to a MyTriangle then add to list
+        // Go through the vertices in the triangles and add them to a list with converted Triangles
         for(int i = 0; i < mesh.triangles.Length; i += 3)
         {
             Vector3[] points = new Vector3[3];
@@ -117,7 +109,7 @@ public class Intersection
             Triangle triangle = new Triangle(points);
             listTriangles.Add(triangle);
 
-            // After converting in MyTriangle (from point to vertex) add vertex in list
+            // After convertion in Triangle (from point to vertex) add vertices in list
             foreach(Vertex vertex in triangle.vertices)
             {
                 listVertices.Add(vertex);

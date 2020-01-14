@@ -15,7 +15,7 @@ public class Triangle
         for (int i = 0; i < Mathf.Min(points.Length, 3); i++)
         {
             Vertex vertex = new Vertex(points[i]);
-            vertex.AddTriangle(this);
+            vertex.AddTriangle(this);           //Keeps track on what triangles a particular vertex is in
             vertices[i] = vertex;
             position += vertex.position;
         }

@@ -21,6 +21,6 @@ public class Gravity : MonoBehaviour
 
     public static Vector3 Acceleration()
     {
-        return new Vector3(0, instance.gForce, 0);
+        return new Vector3(0, Force, 0);
     }
 }

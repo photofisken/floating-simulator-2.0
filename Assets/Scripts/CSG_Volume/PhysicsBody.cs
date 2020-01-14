@@ -42,8 +42,8 @@ public class PhysicsBody : MonoBehaviour
             float time = Time.realtimeSinceStartup;
 
             // Get Triangle List
-            List<Triangle> triangleList = Intersection.GetTriangleList(ref triangles, ref vertices, transform, intersectPosition);
-            //Debug.Log("GetTriangleList(): " + (Time.realtimeSinceStartup - time) * 1000f + "ms");
+            List<Triangle> triangleList = Intersection.GetTrianglesUnderWater(ref triangles, ref vertices, transform, intersectPosition);
+            //Debug.Log("GetTrianglesUnderWater(): " + (Time.realtimeSinceStartup - time) * 1000f + "ms");
             //time = Time.realtimeSinceStartup;
 
             // Get Volume
