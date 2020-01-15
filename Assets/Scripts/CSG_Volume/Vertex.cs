@@ -6,7 +6,6 @@ using UnityEngine;
 public class Vertex
 {
     public Vector3 position;
-    //[System.NonSerialized] public List<MyVertex> connections = new List<MyVertex>();
     [System.NonSerialized] public List<Triangle> triangles = new List<Triangle>();
 
     public Vertex(Vector3 position)

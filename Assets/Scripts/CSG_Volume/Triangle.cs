@@ -22,6 +22,21 @@ public class Triangle
 
         position /= vertices.Length;
 
+        //int index = 1;                                                // Adding the other vertices in the triangle to a vertices list of neighbours
+        //for (int i = 0; i < vertices.Length; i++)
+        //{
+        //    if (!vertices[i].connections.Contains(vertices[index]))
+        //    {
+        //        vertices[i].connections.Add(vertices[index]);
+        //    }
+
+        //    if (index == 2)
+        //        index = 0;
+        //    else
+        //        index++;
+        //}
+
+
         /*
         for (int i = 0; i < vertices.Length; i++)
         {
