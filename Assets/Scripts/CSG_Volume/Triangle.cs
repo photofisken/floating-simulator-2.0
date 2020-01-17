@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Triangle
 {
-    public Vertex[] vertices = new Vertex[3];
+    public Vector3[] vertices = new Vector3[3];
     public Vector3 position;
     public Triangle(Vector3[] points)
     {
@@ -14,10 +14,8 @@ public class Triangle
         // For all the vertices in the triangle (3) create a MyVertex with the triangle(s) it is in
         for (int i = 0; i < Mathf.Min(points.Length, 3); i++)
         {
-            Vertex vertex = new Vertex(points[i]);
-            vertex.AddTriangle(this);           //Keeps track on what triangles a particular vertex is in
-            vertices[i] = vertex;
-            position += vertex.position;
+            vertices[i] = points[i];
+            position += points[i];
         }
 
         position /= vertices.Length;

@@ -31,9 +31,9 @@ public class VolumeCalculator
         for (int i = 0; i < underWaterTriangles.Count; i++)
         {
             // The triangle from the mesh will form the base of a tetrahedron, so we can calculate the volume of the mesh
-            Vector3 a = underWaterTriangles[i].vertices[0].position;
-            Vector3 b = underWaterTriangles[i].vertices[1].position;
-            Vector3 c = underWaterTriangles[i].vertices[2].position;
+            Vector3 a = underWaterTriangles[i].vertices[0];
+            Vector3 b = underWaterTriangles[i].vertices[1];
+            Vector3 c = underWaterTriangles[i].vertices[2];
 
             // V = |(a - d) dot ((b - d) cross (c - d))| / 6 , (A third of the determinant of the base of a tetrahedron times the height (median point))
             float volume = Mathf.Abs(Vector3.Dot(a - medianPoint, Vector3.Cross(b - medianPoint, c - medianPoint))) / 6f;
@@ -64,7 +64,7 @@ public class VolumeCalculator
         {
             for (int j = 0; j < underWaterTriangles[i].vertices.Length; j++)
             {
-                medianPoint += underWaterTriangles[i].vertices[j].position;
+                medianPoint += underWaterTriangles[i].vertices[j];
                 vertexIndex++;
             }
         }

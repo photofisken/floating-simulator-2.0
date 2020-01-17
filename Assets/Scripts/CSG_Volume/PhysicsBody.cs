@@ -1,27 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PhysicsBody : MonoBehaviour
 {
+    // Adjustable factors
     public float mass;
+    public float area = 1f;
+    public float coefficientOfDrag = 1f;
     public float totalVolume;
 
     public Vector3 velocity;
-
-    public Vector3 gravity;
-    public Vector3 lift;
+    public Vector3 lift;    
 
     //Not adjustable factors (for now)
     [SerializeField] private MeshFilter mf;
     [HideInInspector] public bool dragging = false;
+    [HideInInspector] public bool start = true;
     [SerializeField] private GameObject water;
     [SerializeField] private GameObject ground;
     [SerializeField] private Vector3 intersectPosition;
+    private float densityAir = 1.2f; // around 15 degrees celcius outside, kg/m3
+    private float densityWater = 997f; // kg/m3  
 
-    public List<Vertex> vertices;
+    public List<Vector3> vertices;
     public List<Triangle> triangles;
     public List<Triangle> underWaterTriangles;
+
+    [SerializeField] private Text UIText;
 
     private void Start()
     {
@@ -35,37 +42,51 @@ public class PhysicsBody : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (!dragging)
+        if (!dragging && !start)
         {
-            velocity += Gravity.Acceleration() * Time.fixedDeltaTime;
+            velocity += Gravity.Acceleration();
 
             float time = Time.realtimeSinceStartup;
 
             // Get Triangle List
-            List<Triangle> triangleList = Intersection.GetTrianglesUnderWater(ref triangles, ref vertices, transform, intersectPosition);
-            //Debug.Log("GetTrianglesUnderWater(): " + (Time.realtimeSinceStartup - time) * 1000f + "ms");
-            //time = Time.realtimeSinceStartup;
+            List<Triangle> underWaterTriangles = Intersection.GetTrianglesUnderWater(ref triangles, ref vertices, transform, intersectPosition);
 
             // Get Volume
-            float volumeUnderWater = VolumeCalculator.GetVolume(ref triangleList, transform, intersectPosition);
-           // Debug.Log("GetVolume(): " + (Time.realtimeSinceStartup - time) * 1000f + "ms");
-            //time = Time.realtimeSinceStartup;
+            float volumeUnderWater = VolumeCalculator.GetVolume(ref underWaterTriangles, transform, intersectPosition);
+
+            if(UIText != null)
+            {
+                float totalVolumeRounded = Mathf.Round(totalVolume * 100f) / 100f;
+                float volumeUnderWaterRounded = Mathf.Round(volumeUnderWater * 100f) / 100f;
+                UIText.text = transform.name + " - Total Volume:" + totalVolumeRounded + ", Volume Under Water: " + volumeUnderWaterRounded;
+            }
+
+            // Calculate drag from air or water
+            float dragDensity = volumeUnderWater > 0f ? densityWater : densityAir;
+            Vector3 drag = Drag.GetDragForce(coefficientOfDrag, dragDensity, velocity, area);
+            velocity -= drag / mass;
 
             // Calculate Lift
-            Vector3 lift = Lift.CalculateLift(transform, intersectPosition, volumeUnderWater, totalVolume);
-            //Debug.Log("CalculateLift(): " + (Time.realtimeSinceStartup - time) * 1000f + "ms");
-            //time = Time.realtimeSinceStartup;
+            Vector3 bouyancy = Buoyancy.Calculate(transform, intersectPosition, volumeUnderWater, totalVolume);
 
             // velocity += lift;
-            velocity += lift / mass * Time.fixedDeltaTime;
+            velocity += bouyancy / mass * Time.fixedDeltaTime;
 
+            if (transform.position.y < ground.transform.position.y)
+            {
+                Vector3 currentPosition = transform.position;
+                currentPosition.y = ground.transform.position.y;
+                transform.position = currentPosition;
+                velocity = Vector3.zero;
+            }
             //velocity += Lift.CalculateLift(ref myTriangles, ref myVertices, transform, intersectPosition, totalVolume) / mass * Time.fixedDeltaTime;
-            ApplyVelocity(velocity);
+
+            ApplyVelocity();
         }
     }
 
-    public void ApplyVelocity(Vector3 addVelocity)
+    public void ApplyVelocity()
     {
-        transform.position += addVelocity * Time.fixedDeltaTime;
+        transform.position += velocity * Time.fixedDeltaTime;
     }
 }

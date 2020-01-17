@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lift
+public class Buoyancy
 {
 
-    public static Vector3 CalculateLift(Transform meshTransform, Vector3 intersectPosition, float volumeUnderWater, float totalVolume)
+    public static Vector3 Calculate(Transform meshTransform, Vector3 intersectPosition, float volumeUnderWater, float totalVolume)
     {
         float densityAir = 1.2f; // around 15 degrees celcius outside, kg/m3
-        float densityWater = 997f; // kg/m3
+        float densityWater = 997f; // kg/m3  
     
         // F = Volume * density * gForce (formula F = mg)
         float waterForce = volumeUnderWater * densityWater * -Gravity.Force;
